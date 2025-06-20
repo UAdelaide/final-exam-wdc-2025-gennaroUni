@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const path = require('path');
 const db = require('../models/db');
 
 // GET all users (for admin/testing)
@@ -49,7 +50,15 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    res.json({ message: 'Login successful', user: rows[0] });
+    req.session.user = rows[0];
+    console.log('Login Successful');
+
+    if (req.session.user.role === 'owner') {
+      return res.json({ redirect: '/owner-dashboard.html' });
+    }
+
+    return res.json({ redirect: '/walker-dashboard.html' });
+
   } catch (error) {
     res.status(500).json({ error: 'Login failed' });
   }

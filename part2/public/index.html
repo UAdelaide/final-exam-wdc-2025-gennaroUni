@@ -50,8 +50,11 @@
               })
             });
             const result = await res.json();
-
             if (!res.ok) throw new Error(result.error || 'Login Error');
+
+            if (result.redirect) {
+              window.location.href = result.redirect;
+            }
 
             this.username = '';
             this.password = '';
