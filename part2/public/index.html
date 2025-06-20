@@ -34,7 +34,7 @@
       data() {
         return {
           message: 'Welcome to the Dog Walking Service!',
-          username: '',
+          username: '', // form data;
           password: '',
         };
       },
@@ -52,10 +52,12 @@
             const result = await res.json();
             if (!res.ok) throw new Error(result.error || 'Login Error');
 
+            // redirects to appropriate dashboard route based on login result;
             if (result.redirect) {
               window.location.href = result.redirect;
             }
 
+            // reset form data;
             this.username = '';
             this.password = '';
 

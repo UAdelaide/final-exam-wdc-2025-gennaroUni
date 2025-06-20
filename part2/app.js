@@ -9,6 +9,7 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '/public')));
+// session setup;
 app.use(cookieParser());
 app.use(session({
     secret: 'string of choice',

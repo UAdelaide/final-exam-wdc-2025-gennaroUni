@@ -36,8 +36,9 @@ router.get('/me', (req, res) => {
   res.json(req.session.user);
 });
 
-// POST login (dummy version)
+// POST login;
 router.post('/login', async (req, res) => {
+  // chnaged to username to align with login form;
   const { username, password } = req.body;
 
   try {
@@ -50,18 +51,39 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
+    // store user information in session;
     req.session.user = rows[0];
-    console.log('Login Successful');
+    console.log('Login Successful'); // log for validation;
 
+    // if statement determines which dashboard redirect to return;
     if (req.session.user.role === 'owner') {
-      return res.json({ redirect: '/owner-dashboard.html' });
+      return res.json({ redirect: '/api/users/owner-dashboard' });
     }
 
-    return res.json({ redirect: '/walker-dashboard.html' });
+    return res.json({ redirect: '/api/users/walker-dashboard' });
 
   } catch (error) {
     res.status(500).json({ error: 'Login failed' });
   }
+});
+
+// GET for owner dahsboard;
+router.get('/owner-dashboard', (req, res) => {
+  // checks is session exists and user is indeed an owner;
+  if (!req.session.user || req.session.user.role !== 'owner') {
+    return res.status(403).send('Forbidden');
+  }
+
+  res.sendFile(path.join(__dirname, '..', 'public', 'owner-dashboard.html'));
+});
+
+router.get('/walker-dashboard', (req, res) => {
+  // checks is session exists and user is indeed a walker;
+  if (!req.session.user || req.session.user.role !== 'walker') {
+    return res.status(403).send('Forbidden');
+  }
+
+  res.sendFile(path.join(__dirname, '..', 'public', 'walker-dashboard.html'));
 });
 
 module.exports = router;
