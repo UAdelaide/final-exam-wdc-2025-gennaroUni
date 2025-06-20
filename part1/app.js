@@ -17,20 +17,43 @@ app.use(cookieParser());
 
 (async () => {
   try {
-
-    // Read the full SQL file
+    // Read the full SQL file;
     const db = await fs.readFile('./dogwalks.sql', 'utf8');
 
-    // Connect to MySQL without specifying a database
+    // Connect to MySQL without specifying a database;
     const connection = await mysql.createConnection({
       host: 'localhost',
       user: 'root',
       password: '',
-      multipleStatements: true
+      multipleStatements: true // allows execution of multiple queries;
     });
 
-    // Execute the whole dogwalks.sql file (it creates & uses the database itself)
+    // Execute the whole dogwalks.sql file (it creates & uses the database itself);
     await connection.query(db);
+
+    // add data using Q5 queries;
+    await connection.query(`
+        INSERT INTO Users (username, email, password_hash, role) VALUES
+            ('alice123', 'alice@example.com', 'hashed123', 'owner'),
+            ('bobwalker', 'bob@example.com', 'hashed456', 'walker'),
+            ('carol123', 'carol@example.com', 'hashed789', 'owner'),
+            ('bingo200', 'bingo@bingo.com', 'hashedcheese', 'walker'),
+            ('oldmate', 'waiting@foramate.com', 'hashedmate', 'owner');
+
+        INSERT INTO Dogs (owner_id, name, size) VALUES
+            ((SELECT user_id FROM Users WHERE username = 'alice123'), 'Max', 'medium'),
+            ((SELECT user_id FROM Users WHERE username = 'carol123'), 'Bella', 'small'),
+            ((SELECT user_id FROM Users WHERE username = 'oldmate'), 'Jeff', 'large'),
+            ((SELECT user_id FROM Users WHERE username = 'carol123'), 'Franky', 'small'),
+            ((SELECT user_id FROM Users WHERE username = 'carol123'), 'Charlie', 'small');
+
+        INSERT INTO WalkRequests (dog_id, requested_time, duration_minutes, location, status) VALUES
+            ((SELECT dog_id FROM Dogs WHERE name = 'Max'), '2025-06-10 08:00:00', 30, 'Parklands', 'open'),
+            ((SELECT dog_id FROM Dogs WHERE name = 'Bella'), '2025-06-10 09:30:00', 45, 'Beachside Ave', 'accepted'),
+            ((SELECT dog_id FROM Dogs WHERE name = 'Franky'), '2025-06-10 06:30:00', 45, 'Parade', 'completed'),
+            ((SELECT dog_id FROM Dogs WHERE name = 'Charlie'), '2025-06-10 11:30:00', 45, 'Glenelg', 'open'),
+            ((SELECT dog_id FROM Dogs WHERE name = 'Jeff'), '2025-06-10 11:30:00', 45, 'Glenelg', 'accepted');
+    `);
 
     console.log('Database created and initialized from dogwalks.sql file');
 
