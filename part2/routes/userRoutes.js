@@ -86,4 +86,19 @@ router.get('/walker-dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'walker-dashboard.html'));
 });
 
+// Logout route;
+router.get('/logout', (req, res) => {
+  // end session;
+  req.session.destroy(err => {
+    if (err) {
+      console.error('Logout error:', err);
+      return res.status(500).json({ error: 'Logout failed' });
+    }
+
+    // Clear the session cookie
+    res.clearCookie('connect.sid'); // default cookie name;
+    return res.json({ redirect: '/' }); // return root url (index.html);
+  });
+});
+
 module.exports = router;

@@ -9,7 +9,10 @@
 </head>
 <body class="bg-light">
   <div id="app" class="container py-4">
-    <h1 class="mb-4 text-primary">Owner Dashboard</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h1 class="mb-4 text-primary">Owner Dashboard</h1>
+      <button type="button" class="btn btn-success" style="height: min-content;" @click="logout">Logout</button>
+    </div>
 
     <!-- Walk request form -->
     <div class="card mb-4">
@@ -126,6 +129,20 @@
           error,
           submitWalkRequest
         };
+      },
+      methods: {
+        async logout() {
+          try {
+            const res = await fetch('/api/users/logout');
+            const result = await res.json();
+            // redirects to resultant url;
+            if (result.redirect) {
+              window.location.href = result.redirect;
+            }
+          } catch (err) {
+            alert('Logout failed');
+          }
+        }
       }
     }).mount('#app');
   </script>
