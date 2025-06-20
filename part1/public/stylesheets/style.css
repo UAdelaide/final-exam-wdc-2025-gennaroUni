@@ -1,8 +1,42 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background: linear-gradient(to right, red, white, green);
+  font-family: Comic Sans MS, Papyrus, cursive;
+  color: #fff;
+  animation: blink 0.5s infinite;
 }
 
-a {
-  color: #00B7FF;
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.dog-div {
+  margin: 50px;
+  padding: 30px;
+  border: 10px dashed blue;
+  text-align: right;
+}
+
+button {
+  margin: 10px;
+  padding: 20px;
+  font-size: 24px;
+  background-color: magenta;
+  color: black;
+}
+
+.click-box {
+  width: 150px;
+  height: 150px;
+  background-color: lightseagreen;
+  margin: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+}
+
+img {
+  max-width: 100%;
+  border: 5px dotted purple;
 }

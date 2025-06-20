@@ -1,12 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Express</title>
+    <title>Dog of the Day</title>
     <link rel="stylesheet" href="/stylesheets/style.css">
+    <script src="https://unpkg.com/vue@3.4.15/dist/vue.global.prod.js"></script>
 </head>
+    <body>
+        <div id="app">
+            <h1>DOG OF THE DAY</h1>
 
-<body>
-    <h1>Express</h1>
-    <p>Welcome to Express</p>
-</body>
+            <!-- Kinematic load: multiple clicks to reveal -->
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                <div class="click-box" @click="click1 = true">Start here</div>
+                <div class="click-box" v-if="click1" @click="click2 = true">Almost there</div>
+                <div class="click-box" v-if="click2" @click="getDog">Hit me!</div>
+            </div>
+
+            <!-- Dog Display -->
+            <div class="dog-div" v-if="dogUrl">
+                <h2>Today's Canine</h2>
+                <img :src="dogUrl" alt="">
+                <p>Name: Betsie</p>
+                <p>Size: Large</p>
+                <p>Owner: Chris P. Bacon</p>
+            </div>
+
+            <!-- Useless buttons = cognitive overload -->
+            <div>
+                <button type="button" @click="alert1()">I am useless</button>
+                <button type="button" @click="alert2()">Also useless</button>
+                <button type="button" @click="alert3()">Useless!</button>
+            </div>
+        </div>
+        <script>
+            const { createApp } = Vue;
+
+            createApp({
+            data() {
+                return {
+                dogUrl: '',
+                click1: false,
+                click2: false,
+                };
+            },
+            methods: {
+                async getDog() {
+                    try {
+                        const response = await fetch('https://dog.ceo/api/breeds/image/random');
+                        const data = await response.json();
+                        this.dogUrl = data.message;
+                    } catch (error) {
+                        alert("DOG API ERROR");
+                    }
+                },
+                alert1() {
+                    alert('Told ay!');
+                },
+                alert2() {
+                    alert('Fool ya twice!');
+                },
+                alert3() {
+                    alert('shame on you');
+                }
+            }
+            }).mount('#app');
+        </script>
+    </body>
 </html>
