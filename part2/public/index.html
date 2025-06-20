@@ -9,12 +9,23 @@
 </head>
 <body class="bg-light">
 
-  <div id="app" class="container py-5">
+  <div id="app" class="container py-5" style="width: 40%; align-self: center;">
     <h1 class="mb-4 text-primary">{{ message }}</h1>
     <p class="lead">Connect with trusted walkers for your beloved dog!</p>
 
-    <a href="owner-dashboard.html" class="btn btn-outline-primary me-2">Owner Dashboard</a>
-    <a href="walker-dashboard.html" class="btn btn-outline-success">Walker Dashboard</a>
+    <div class="card-body">
+        <form @submit.prevent="login()">
+          <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input v-model="username" type="text" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input v-model="password" type="password" class="form-control" required>
+          </div>
+          <button type="submit" class="btn btn-success">Sign in</button>
+        </form>
+      </div>
   </div>
 
   <script>
@@ -22,8 +33,33 @@
     createApp({
       data() {
         return {
-          message: 'Welcome to the Dog Walking Service!'
+          message: 'Welcome to the Dog Walking Service!',
+          username: '',
+          password: '',
         };
+      },
+      methods: {
+        async login() {
+          try {
+            const res = await fetch('/api/users/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                username: this.username,
+                password: this.password
+              })
+            });
+            const result = await res.json();
+
+            if (!res.ok) throw new Error(result.error || 'Login Error');
+
+            this.username = '';
+            this.password = '';
+
+          } catch (err) {
+            alert('Failed to Login');
+          }
+        }
       }
     }).mount('#app');
   </script>
