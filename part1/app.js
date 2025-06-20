@@ -7,6 +7,8 @@ const fs = require('fs/promises');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var dogsRouter = require('./routes/dogs');
+var walkersRouter = require('./routes/walkers');
 
 var app = express();
 
@@ -53,6 +55,17 @@ app.use(cookieParser());
             ((SELECT dog_id FROM Dogs WHERE name = 'Franky'), '2025-06-10 06:30:00', 45, 'Parade', 'completed'),
             ((SELECT dog_id FROM Dogs WHERE name = 'Charlie'), '2025-06-10 11:30:00', 45, 'Glenelg', 'open'),
             ((SELECT dog_id FROM Dogs WHERE name = 'Jeff'), '2025-06-10 11:30:00', 45, 'Glenelg', 'accepted');
+
+        INSERT INTO WalkRatings (request_id, walker_id, owner_id, rating, comments)
+        VALUES (
+            (SELECT request_id FROM WalkRequests wr
+                JOIN Dogs d ON wr.dog_id = d.dog_id
+                WHERE d.name = 'Franky' AND wr.status = 'completed'),
+            (SELECT user_id FROM Users WHERE username = 'bobwalker'),
+            (SELECT owner_id FROM Dogs WHERE name = 'Franky'),
+            5,
+            'Great walk, very professional!'
+        );
     `);
 
     console.log('Database created and initialized from dogwalks.sql file');
@@ -67,5 +80,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/api/dogs', dogsRouter);
+app.use('/api/walkers', walkersRouter);
 
 module.exports = app;
