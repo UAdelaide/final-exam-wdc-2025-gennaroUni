@@ -29,6 +29,29 @@ router.post('/register', async (req, res) => {
   }
 });
 
+// GET all dogs owned by users;
+router.get('/my-dogs', async (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ error: 'Not logged in' });
+  }
+
+  const { user_id } = req.session.user; // get id from session;
+  try {
+    const [result] = await db.query(`
+      SELECT d.dog_id, d.name FROM Dogs d
+      WHERE owner_id = ?
+    `, [user_id]);
+
+    console.log(result);
+    res.json(result);
+
+  } catch (error) {
+    res.status(500).json({ error: 'Request Failed' });
+  }
+});
+
+
+// GET session information;
 router.get('/me', (req, res) => {
   if (!req.session.user) {
     return res.status(401).json({ error: 'Not logged in' });
